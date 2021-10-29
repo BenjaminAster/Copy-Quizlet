@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Version: 8 -->
+
+<head>
+	<title id="title"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	
+	<script src="/jquery.js"></script>
+	<!-- <script src="/__/firebase/8.1.1/firebase-app.js"></script>
+	<script src="/__/firebase/8.1.1/firebase-analytics.js"></script>
+	<script src="/__/firebase/8.1.1/firebase-database.js"></script> -->
+	<script src="/firebase-app.js"></script>
+	<script src="/firebase-analytics.js"></script>
+	<script src="/firebase-database.js"></script>
+	<script src="/utils/firebaseinit.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js"></script>
+
+	<!-- <script src="/utils/cookies.js"></script> -->
+
+	<link rel="icon" href="/media/Copy Quizlet Learnset Logo 7.png">
+
+	<!-- <link rel="stylesheet" type="text/css" href="https://benjaminaster.com/roboto.css"> -->
+	<link rel="stylesheet" href="style.css">
+
+	<meta charset="UTF-8">
+</head>
+
+<body>
+
+	<div id="cover-div"
+		style="position: absolute; margin: 0; border: none; top: 0; left: 0; width: 100%; height: 1000%; background-color: #13151c; z-index: 10;">
+		<noscript>
+			<h2 style="position: fixed; background: none; color: #ddd; top: 0; left: 0; margin: 1em; z-index: 21;">
+				If you see this text, JavaScript might not be enabled or you are using an outdated browser.
+			</h2>
+		</noscript>
+	</div>
+
+
+	<div id="ie-text">
+		<script>
+			if ((window.navigator.userAgent.indexOf("MSIE") != -1) || document.documentMode) {
+				$("#ie-text")[0].innerHTML += $("noscript")[0].innerText;
+			}
+		</script>
+	</div>
+
+
+	<h2 id="mainHeading" style="display:inline"></h2>
+	<span class="languageSpan">
+		&nbsp;
+		<label for="language" id="languageSelectLabel"></label>
+		<select name="language" id="languageSelect">
+			<option value="de" id="languageSelectGerman"></option>
+			<option value="en" id="languageSelectEnglish"></option>
+		</select>
+	</span>
+
+	<p hidden id="please-use-desktop"></p>
+	<p hidden id="please-use-chromium"></p>
+	<p id="paragraph1"></p>
+
+
+	<h3 id="step-1-header"></h3>
+
+	<div class="tab">
+		<button class="tablinks import active" onclick="switchTab(event);" id="import-from-quizlet-tabname"></button>
+		<button class="tablinks import" onclick="switchTab(event);" id="import-from-xlsx-tabname"></button>
+		<button class="tablinks import" onclick="switchTab(event);" id="import-from-csv-tabname"></button>
+		<button class="tablinks import" onclick="switchTab(event);" id="import-from-anki-tabname"></button>
+	</div>
+
+	<div id="import-from-quizlet-div" class="tabcontent import">
+		<h4 id="import-from-quizlet-header"></h4>
+		<p id="import-from-quizlet-paragraph-1"></p>
+		<hr>
+		<h4 id="import-from-quizlet-header-2"></h4>
+		<p id="import-from-quizlet-paragraph-2"></p>
+		<hr>
+		<h4 id="import-from-quizlet-header-3"></h4>
+		<p id="import-from-quizlet-paragraph-3"></p>
+		<hr>
+		<h4 id="import-from-quizlet-header-4"></h4>
+		<p id="import-from-quizlet-paragraph-4"></p>
+
+		<div class="copy-box" onclick="copyCode(event)">
+			let id=<span style="background: none;" id="console-script-id">undefined</span>,
+			el=<wbr>document.<wbr>createElement("script");<br>
+			el.src=<wbr>"<span style="background: none;"
+				id="location-origin"></span>/<wbr>copy-quizlet/console-script.js";<br>
+			document.body<wbr>.append(el);
+		</div>
+		<!-- <p hidden id="console-script-copied"></p> -->
+		<hr>
+		<h4 id="import-from-quizlet-header-5"></h4>
+		<p id="import-from-quizlet-paragraph-5"></p>
+	</div>
+
+	<div id="import-from-xlsx-div" class="tabcontent import" hidden>
+		<h4 id="import-from-xlsx-header"></h4>
+		<p id="import-from-xlsx-paragraph-1"></p>
+		<hr>
+		<h4 id="import-from-xlsx-header-2"></h4>
+		<p id="import-from-xlsx-paragraph-2"></p>
+
+		<div class="file-upload-div">
+			<label class="button" for="xlsx-upload" id="xlsx-upload-label"></label>
+			<input class="file-upload" type="file" accept=".xlsx" id="xlsx-upload" hidden>
+		</div>
+	</div>
+
+	<div id="import-from-csv-div" class="tabcontent import" hidden>
+		<h4 id="import-from-csv-header"></h4>
+		<p id="import-from-csv-paragraph-1"></p>
+		<hr>
+		<h4 id="import-from-csv-header-2"></h4>
+		<p id="import-from-csv-paragraph-2"></p>
+
+		<div class="file-upload-div">
+			<label class="button" for="csv-upload" id="csv-upload-label"></label>
+			<input class="file-upload" type="file" accept=".csv" id="csv-upload" hidden>
+		</div>
+	</div>
+
+	<div id="import-from-anki-div" class="tabcontent import" hidden>
+		<h4 id="import-from-anki-header"></h4>
+		<p id="import-from-anki-paragraph-1"></p>
+		<hr>
+		<h4 id="import-from-anki-header-2"></h4>
+		<p id="import-from-anki-paragraph-2"></p>
+		<hr>
+		<h4 id="import-from-anki-header-3"></h4>
+		<p id="import-from-anki-paragraph-3"></p>
+		<hr>
+		<h4 id="import-from-anki-header-4"></h4>
+		<p id="import-from-anki-paragraph-4"></p>
+
+		<div class="file-upload-div">
+			<label class="button" for="anki-upload" id="anki-upload-label"></label>
+			<input class="file-upload" type="file" accept=".txt" id="anki-upload" hidden>
+		</div>
+	</div>
+
+	<hr>
+
+	<section>
+		<!-- Step 2 -->
+		<h3 id="step-2-header"></h3>
+		<p id="step-2-paragraph-1"></p>
+		<p id="step-2-to-voc-arrived"></p>
+		<table id="voc-table"></table>
+	</section>
+
+	<hr>
+
+	<section>
+		<!-- Step 3 -->
+		<h3 id="step-3-header"></h3>
+		<p id="step-3-paragraph-1"></p>
+		<table id="editable-voc-table" spellcheck="false" ondragstart="return false;" ondrop="return false;">
+		</table>
+	</section>
+
+	<hr>
+
+	<h3 id="step-4-header"></h3>
+
+	<div class="tab">
+		<button class="tablinks export active" onclick="switchTab(event);" id="export-to-quizlet-tabname"></button>
+		<button class="tablinks export" onclick="switchTab(event);" id="export-to-xlsx-tabname"></button>
+		<button class="tablinks export" onclick="switchTab(event);" id="export-to-csv-tabname"></button>
+		<!-- <button class="tablinks export" onclick="switchTab(event);" id="export-to-anki-tabname"></button> -->
+	</div>
+
+	<div id="export-to-quizlet-div" class="tabcontent export">
+		<h4 id="export-to-quizlet-header-0"></h4>
+		<p id="export-to-quizlet-paragraph-0"></p>
+		<hr>
+		<h4 id="export-to-quizlet-header-1"></h4>
+		<p id="export-to-quizlet-paragraph-1"></p>
+		<hr>
+		<h4 id="export-to-quizlet-header-2"></h4>
+		<p id="export-to-quizlet-paragraph-2"></p>
+		<div class="copy-box" id="copy-quizlet-vocabulary" onclick="copyCode(event)">
+
+		</div>
+		<!-- <p hidden id="quizlet-vocabulary-copied"></p> -->
+		<hr>
+		<h4 id="export-to-quizlet-header-3"></h4>
+		<p id="export-to-quizlet-paragraph-3"></p>
+		<hr>
+		<h4 id="export-to-quizlet-header-4"></h4>
+		<p id="export-to-quizlet-paragraph-4"></p>
+	</div>
+
+	<div id="export-to-xlsx-div" class="tabcontent export" hidden>
+		<h4 id="export-to-xlsx-header"></h4>
+		<p id="export-to-xlsx-paragraph"></p>
+		<hr>
+		<h4 id="export-to-xlsx-header-1"></h4>
+		<p id="export-to-xlsx-paragraph-1"></p>
+		<button id="export-to-xlsx-button" class="file-button"></button>
+	</div>
+
+	<div id="export-to-csv-div" class="tabcontent export" hidden>
+		<h4 id="export-to-csv-header"></h4>
+		<p id="export-to-csv-paragraph"></p>
+		<hr>
+		<h4 id="export-to-csv-header-1"></h4>
+		<p id="export-to-csv-paragraph-1"></p>
+		<button id="export-to-csv-button" class="file-button"></button>
+	</div>
+
+	<!-- <div id="export-to-anki-div" class="tabcontent export" hidden>
+		<h4 id="export-to-anki-header"></h4>
+		<p id="export-to-anki-paragraph-1"></p>
+	</div> -->
+
+	<hr>
+
+	<span style="float: right">
+		&nbsp;<a id="home" href="/"></a> • <a id="contact" href="/contact"></a>
+	</span>
+	<p style="display: inline;" id="copyright2020"></p>
+
+	<script src="languages.js"></script>
+	<script src="script.js"></script>
+	<script src="import.js"></script>
+	<script src="select.js"></script>
+	<script src="edit.js"></script>
+	<script src="export.js"></script>
+
+</body>
+
+</html>
